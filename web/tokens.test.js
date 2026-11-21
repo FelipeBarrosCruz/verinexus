@@ -22,6 +22,7 @@ export const PAIRS = [
   ['primary', 'surface', 4.5], ['primary', 'bg', 4.5], ['primary', 'primary-subtle', 4.5],
   ['on-primary', 'primary', 4.5], ['on-primary', 'primary-hover', 4.5],
   ['on-secondary', 'secondary', 4.5], ['on-secondary', 'secondary-hover', 4.5],
+  ['on-error', 'error', 4.5],
   ['success', 'success-bg', 4.5], ['error', 'error-bg', 4.5], ['warning', 'warning-bg', 4.5], ['info', 'info-bg', 4.5],
   ['success', 'surface', 4.5], ['error', 'surface', 4.5], ['warning', 'surface', 4.5], ['info', 'surface', 4.5],
   ['text', 'success-bg', 4.5], ['text', 'error-bg', 4.5], ['text', 'warning-bg', 4.5], ['text', 'info-bg', 4.5],
@@ -44,7 +45,7 @@ test('os dois blocos do tema escuro são idênticos', () => {
 });
 
 // Arquivos já migrados para os tokens; cada etapa da migração entra aqui.
-const GUARDED = ['components.css'];
+const GUARDED = ['components.css', 'ui.js'];
 
 test('sem cor nem medida solta fora de tokens.css', () => {
   for (const f of GUARDED.filter((x) => x.endsWith('.css'))) {

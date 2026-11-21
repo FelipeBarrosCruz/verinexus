@@ -31,6 +31,7 @@
   --success-bg: #E5F4EC;
   --error: #B42318;
   --error-bg: #FDECEA;
+  --on-error: #FFFFFF;
   --warning: #8A5300;
   --warning-bg: #FFF3D6;
   --info: #0B57A4;
@@ -70,13 +71,27 @@
   /* Tamanhos de controle (Fitts: alvo mínimo 44 px) */
   --hit: 2.75rem;        /* 44 */
   --control-h: 3rem;     /* 48 */
+  --control-h-lg: 3.5rem;/* 56 */
   --icon-sm: 1.125rem;
   --icon-md: 1.5rem;
+  --icon-status: 2rem;
   --icon-lg: 3rem;
+  --col-min: 16rem;
+  --input-min: 14rem;
   --container: 66rem;
+  --container-narrow: 42rem;
+  --dialog-w: 30rem;
+  --toast-w: 24rem;
+  --phone-w: 26rem;
+  --nav-h: 4.5rem;
   --border-w: 1px;
   --border-w-strong: 2px;
+  --stripe-w: 0.375rem;
   --focus-w: 3px;
+  --focus-offset: 2px;
+  --tracking-tight: -0.01em;
+  --tracking-wide: 0.04em;
+  --underline-offset: 0.2em;
 
   /* Raios */
   --radius-sm: 0.625rem; /* 10 */
@@ -102,6 +117,8 @@
   --dur-base: 220ms;
   --dur-slow: 300ms;
   --stagger: 40ms;
+  --dur-spin: 800ms;
+  --dur-shimmer: 1400ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -133,6 +150,7 @@
     --success-bg: #0F2E22;
     --error: #FF8E84;
     --error-bg: #3A1613;
+    --on-error: #2A0806;
     --warning: #F5C451;
     --warning-bg: #33270A;
     --info: #72B4F5;
@@ -166,6 +184,7 @@
   --success-bg: #0F2E22;
   --error: #FF8E84;
   --error-bg: #3A1613;
+  --on-error: #2A0806;
   --warning: #F5C451;
   --warning-bg: #33270A;
   --info: #72B4F5;
