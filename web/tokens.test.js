@@ -45,7 +45,7 @@ test('os dois blocos do tema escuro são idênticos', () => {
 });
 
 // Arquivos já migrados para os tokens; cada etapa da migração entra aqui.
-const GUARDED = ['components.css', 'ui.js'];
+const GUARDED = ['components.css', 'style.css', 'ui.js', 'app.js'];
 
 test('sem cor nem medida solta fora de tokens.css', () => {
   for (const f of GUARDED.filter((x) => x.endsWith('.css'))) {

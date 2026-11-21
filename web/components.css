@@ -112,7 +112,6 @@ code { font-size: var(--fs-sm); }
 .choice.is-wrong { border-color: var(--error); background: var(--error-bg); animation: shake var(--dur-slow) var(--ease-out); }
 .choice.is-wrong .icon { color: var(--error); }
 .choice:disabled { cursor: default; }
-.choice:disabled:not(.is-right) { opacity: 0.7; }
 
 /* ---------- Card ---------- */
 .card { background: var(--surface); border: var(--border-w) solid var(--border); border-radius: var(--radius-lg); padding: var(--space-5); box-shadow: var(--shadow-md); }

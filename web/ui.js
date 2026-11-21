@@ -31,6 +31,7 @@ const PATHS = {
   award: '<circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   x: '<path d="M18 6 6 18M6 6l12 12"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   face: '<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M8.5 15a5 5 0 0 0 7 0"/>',
   refresh: '<path d="M20 11a8 8 0 0 0-14.9-3M4 4v4h4M4 13a8 8 0 0 0 14.9 3M20 20v-4h-4"/>',
   logout: '<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/>',
@@ -101,11 +102,14 @@ export function toast({ tone = 'success', title, text = '' }) {
   };
   el.querySelector('.toast-close').onclick = close;
   region.append(el);
+  // Miller: no máximo 3 avisos na tela; o mais antigo sai.
+  const live = [...region.querySelectorAll('.toast:not(.leaving)')];
+  if (live.length > 3) live[0].querySelector('.toast-close').click();
   setTimeout(close, 6000);
 }
 
 // Roda fn quando a animação de saída termina (ou logo, se não houver animação).
-function afterAnimation(el, fn) {
+export function afterAnimation(el, fn) {
   let done = false;
   const run = () => { if (!done) { done = true; fn(); } };
   el.addEventListener('animationend', run, { once: true });
@@ -128,11 +132,7 @@ export function modal({ tone = 'info', title, body, actions }) {
       <div class="modal-actions">${actions.map((a, i) => `<button type="button" class="btn ${a.variant ?? 'btn-ghost'}" data-i="${i}">${esc(a.label)}</button>`).join('')}</div>
     </div>`;
     const opener = document.activeElement;
-    const finish = (value) => {
-      if (d.classList.contains('closing')) return;
-      d.classList.add('closing');
-      afterAnimation(d, () => { d.close(); d.remove(); opener?.focus?.(); resolve(value); });
-    };
+    const finish = (value) => closeDialog(d, () => { opener?.focus?.(); resolve(value); });
     d.addEventListener('click', (e) => {
       const b = e.target.closest('[data-i]');
       if (b) finish(actions[b.dataset.i].value);
@@ -143,6 +143,13 @@ export function modal({ tone = 'info', title, body, actions }) {
     d.showModal();
     d.querySelector('[data-i="0"]').focus();
   });
+}
+
+/** Fecha um <dialog> com animação de saída e o remove do DOM. */
+export function closeDialog(d, then) {
+  if (d.classList.contains('closing')) return;
+  d.classList.add('closing');
+  afterAnimation(d, () => { d.close(); d.remove(); then?.(); });
 }
 
 /** Tabs acessíveis: clique, setas, Home e End. onChange(id) ao trocar. */

@@ -57,6 +57,7 @@
   --fw-semibold: 600;
   --fw-bold: 700;
   --measure: 62ch;
+  --measure-title: 22ch;
 
   /* Espaço (escala 4/8) */
   --space-1: 0.25rem;  /* 4 */
@@ -77,12 +78,16 @@
   --icon-status: 2rem;
   --icon-lg: 3rem;
   --col-min: 16rem;
+  --kpi-min: 13rem;
   --input-min: 14rem;
   --container: 66rem;
   --container-narrow: 42rem;
   --dialog-w: 30rem;
   --toast-w: 24rem;
   --phone-w: 26rem;
+  --phone-h: 42rem;
+  --aside-w: 20rem;
+  --aside-w-lg: 24rem;
   --nav-h: 4.5rem;
   --border-w: 1px;
   --border-w-strong: 2px;
