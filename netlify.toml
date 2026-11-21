@@ -1,0 +1,9 @@
+# Configuração da Netlify. O site é estático: não há build, só a pasta web/ publicada como está.
+[build]
+  publish = "web"
+
+# A fonte e o favicon mudam pouco: o navegador pode guardar por um ano.
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
