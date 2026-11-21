@@ -49,9 +49,6 @@ export const TONE_ICON = { success: 'check-circle', error: 'x-circle', warning: 
 export const status = ({ tone, title, body = '', live = true }) =>
   `<div class="status tone-${tone}" ${live ? 'role="status"' : ''}>${icon(TONE_ICON[tone])}<div class="status-body"><p class="status-title">${esc(title)}</p>${body}</div></div>`;
 
-export const badge = (text, tone, iconName) =>
-  `<span class="badge ${tone ? `tone-${tone}` : ''}">${iconName ? icon(iconName) : ''}${esc(text)}</span>`;
-
 export const list = (items, ordered = false) => {
   const t = ordered ? 'ol' : 'ul';
   return `<${t}>${items.map((x) => `<li>${esc(x)}</li>`).join('')}</${t}>`;

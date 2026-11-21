@@ -1,6 +1,6 @@
 import * as api from './api.js';
 import {
-  esc, icon, status, badge, list, skeleton, emptyState, field, setFieldError, setBusy,
+  esc, icon, status, list, skeleton, emptyState, field, setFieldError, setBusy,
   toast, modal, tabs, closeDialog, prefs, isDark, applyPrefs, togglePref, TONE_ICON,
 } from './ui.js';
 
@@ -41,7 +41,7 @@ function openMore() {
       <button type="button" class="btn btn-quiet" data-close aria-label="Fechar menu">${icon('x')}</button></div>
     <p class="muted">Telas que mostram como o VeriNexus funciona por dentro.</p>
     <nav class="stack" aria-label="Demonstração">${DEMO.map((n) => `<a class="card card-link sheet-link" href="#/${n.r}">
-      <span class="card-icon">${icon(n.icon)}</span><span class="sheet-text"><strong>${n.label}</strong><span class="muted text-sm">${n.text}</span></span>${icon('arrow-right', 'icon-nudge')}</a>`).join('')}</nav>
+      <span class="sheet-text"><strong>${n.label}</strong><span class="muted text-sm">${n.text}</span></span>${icon('arrow-right', 'icon-nudge')}</a>`).join('')}</nav>
   </div>`;
   const close = () => closeDialog(d);
   d.addEventListener('click', (e) => { if (e.target.closest('a, [data-close]') || e.target === d) close(); });
@@ -77,9 +77,8 @@ applyPrefs();
 renderPrefs();
 render();
 
-const pageHead = (title, lead, extra = '') =>
-  `<header class="page-head">${extra ? `<div class="cluster">${extra}</div>` : ''}<h1>${title}</h1>${lead ? `<p class="lead">${lead}</p>` : ''}</header>`;
-const demoBadge = (text = 'Simulação') => badge(text, 'warning', 'info');
+const pageHead = (title, lead) =>
+  `<header class="page-head"><h1>${title}</h1>${lead ? `<p class="lead">${lead}</p>` : ''}</header>`;
 
 // ---------- Resultado de URL (Verificar, Extensão, WhatsApp) ----------
 const URL_VIEW = {
@@ -124,7 +123,6 @@ function landing() {
   const examples = ['gov-br-regulariza.com/cpf', 'www.pi.gov.br', 'loja-exemplo.com.br'];
   view.innerHTML = `
   <section class="hero">
-    <p class="eyebrow">Pare. Confirme. Só depois aja.</p>
     <h1>Este link é seguro para enviar seus documentos?</h1>
     <p class="lead">Cole o endereço do site. Em poucos segundos mostramos os sinais de risco e o que fazer.</p>
   </section>
@@ -135,7 +133,7 @@ function landing() {
     </div>
     <div class="tabpanel" role="tabpanel" id="panel-link" aria-labelledby="tab-link">
       <form id="url-form" class="stack" novalidate>
-        ${field({ id: 'url', label: 'Endereço do site', hint: 'Pode colar do jeito que estiver, com ou sem “https://”.',
+        ${field({ id: 'url', label: 'Endereço do site', hint: 'Pode colar do jeito que estiver, com ou sem "https://".',
           control: '<div class="input-row"><input class="input" id="url" inputmode="url" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="ex.: www.pi.gov.br"></div>' })}
         <button class="btn btn-lg">${icon('shield')}Verificar link</button>
       </form>
@@ -156,11 +154,11 @@ function landing() {
   <section class="section">
     <h2 class="section-title">Outras formas de se proteger</h2>
     <div class="grid-auto">
-      <a class="card card-link" href="#/whatsapp"><span class="card-icon">${icon('chat')}</span>
+      <a class="card card-link" href="#/whatsapp">
         <strong class="text-lg">Recebeu um áudio estranho?</strong><span class="muted">Encaminhe para o WhatsApp do VeriNexus e veja o que fazer.</span>
         <span class="cluster">Abrir o WhatsApp ${icon('arrow-right', 'icon-nudge')}</span></a>
-      <a class="card card-link" href="#/educacao"><span class="card-icon">${icon('school')}</span>
-        <strong class="text-lg">Aprenda a reconhecer golpes</strong><span class="muted">Desafios curtos e gratuitos. Ganhe pontos e medalhas.</span>
+      <a class="card card-link" href="#/educacao">
+        <strong class="text-lg">Aprenda a reconhecer golpes</strong><span class="muted">Quatro trilhas com situações comuns de golpe, de graça e sem cadastro.</span>
         <span class="cluster">Começar a aprender ${icon('arrow-right', 'icon-nudge')}</span></a>
     </div>
   </section>`;
@@ -207,7 +205,7 @@ function landing() {
         ? status({ tone: 'error', title: 'Encontramos este dado em um vazamento',
           body: `<h4>O que fazer</h4>${list(['Troque a senha dos serviços que usam este e-mail.', 'Ative a verificação em duas etapas.', 'Desconfie de mensagens que citam seus dados.'], true)}<p class="text-sm">Enviado ao servidor: só <code>${h.slice(0, 5)}</code>.</p>` })
         : status({ tone: 'info', title: 'Não encontramos este dado nas bases consultadas',
-          body: `<p>Isso não garante que ele nunca vazou. Continue atento.</p><p class="text-sm">Enviado ao servidor: só <code>${h.slice(0, 5)}</code>.</p>` });
+          body: `<p>Isso não garante que ele nunca vazou.</p><p class="text-sm">Enviado ao servidor: só <code>${h.slice(0, 5)}</code>.</p>` });
     } catch (err) {
       out.innerHTML = status({ tone: 'error', title: 'Não conseguimos consultar agora', body: `<p>${esc(cap(errMsg(err)))}. Tente de novo.</p>` });
     } finally { setBusy(btn, false); }
@@ -227,14 +225,14 @@ const TACTIC_TEXT = {
 const TACTIC_ORDER = Object.keys(TACTIC_TEXT);
 const META_LINE = { no_edit_signals: 'Sem sinais de edição detectados.', edit_signals: 'O arquivo tem sinais de edição.', unverifiable: 'Não foi possível verificar o arquivo.' };
 const SAMPLES = [
-  { label: 'Áudio “do neto”', icon: 'mic', audio: true, dur: '0:09', meta: {}, text: 'Vó, sou eu, troquei de número. Faz um pix de 800 agora e não conta pra ninguém.' },
+  { label: 'Áudio "do neto"', icon: 'mic', audio: true, dur: '0:09', meta: {}, text: 'Vó, sou eu, troquei de número. Faz um pix de 800 agora e não conta pra ninguém.' },
   { label: 'Áudio do almoço', icon: 'mic', audio: true, dur: '0:04', meta: { codec: 'opus', encoder: 'WhatsApp' }, text: 'Oi vó, vamos almoçar domingo? Levo a sobremesa.' },
   { label: 'Link do CPF', icon: 'link', text: 'Seu CPF será bloqueado. Regularize em gov-br-regulariza.com/cpf' },
   { label: 'Pedido de código', icon: 'chat', text: 'Me manda o código que chegou no seu celular.' },
 ];
 const WAVE = [0.4, 0.8, 0.55, 1, 0.65, 0.9, 0.45, 0.75, 0.5, 0.85, 0.35, 0.6];
 // Só na memória da página: o servidor (api.js) não guarda nada.
-const chat = [{ from: 'bot', text: 'Olá! Sou o VeriNexus, da SIA. Encaminhe aqui um áudio, mensagem ou link que pareça estranho. Eu digo o que fazer.' }];
+const chat = [{ from: 'bot', text: 'Olá, aqui é o VeriNexus, da SIA. Se recebeu um áudio, uma mensagem ou um link estranho, encaminhe para cá que eu respondo com o que fazer.' }];
 
 function analyze({ text, audio, meta }) {
   const replies = [];
@@ -267,7 +265,7 @@ function bubble(m, i, isNew, delay = 0) {
   const cls = `bubble ${m.from === 'user' ? 'out' : 'in'}${isNew ? ' is-new' : ''}`;
   if (m.from === 'user' && m.audio) {
     return `<div class="${cls}"><div class="audio-msg">${icon('play')}<span class="wave" aria-hidden="true">${WAVE.map((h) => `<span style="--h:${h}"></span>`).join('')}</span><span>${m.dur}</span></div>
-      <p class="transcript"><span class="sr-only">Áudio encaminhado. </span>Transcrição simulada: “${esc(m.text)}”</p></div>`;
+      <p class="transcript"><span class="sr-only">Áudio encaminhado. </span>Transcrição simulada: "${esc(m.text)}"</p></div>`;
   }
   if (m.from === 'user') return `<div class="${cls}">${esc(m.text)}</div>`;
   if (m.typing) return `<div class="${cls}" aria-label="VeriNexus está analisando"><span class="typing" aria-hidden="true"><span></span><span></span><span></span></span></div>`;
@@ -285,7 +283,7 @@ function bubble(m, i, isNew, delay = 0) {
 
 function whatsapp() {
   view.innerHTML = `
-  ${pageHead('WhatsApp do VeriNexus', 'Encaminhe um áudio, mensagem ou link. A resposta vem curta, com o nível de alerta e o que fazer.', demoBadge())}
+  ${pageHead('WhatsApp do VeriNexus', 'Encaminhe um áudio, uma mensagem ou um link e receba o nível de alerta com o que fazer. Nesta demonstração a conversa é simulada.')}
   <div class="chat-layout">
     <section class="stack">
       <div class="card stack">
@@ -369,7 +367,7 @@ function extensao() {
   const [tone, , short] = r ? urlView(r) : ['warning', '', 'Inválido'];
   const page = PAGES[ext.url] ?? { name: hostOf(ext.url), title: 'Página de exemplo', body: 'Conteúdo fictício.' };
   view.innerHTML = `
-  ${pageHead('Extensão do navegador', 'Ao abrir uma página, a extensão envia só o endereço para o VeriNexus. Se a página for suspeita e pedir documento, ela avisa antes do envio.', demoBadge())}
+  ${pageHead('Extensão do navegador', 'A cada página aberta, a extensão manda só o endereço para o VeriNexus. Se a página for suspeita e pedir documento, ela avisa antes do envio. Aqui a extensão é simulada dentro do site.')}
   <div class="cluster examples"><span class="muted text-sm">Abrir uma página de exemplo:</span>
     ${Object.keys(PAGES).map((u) => `<button type="button" class="chip" data-open="${u}">${hostOf(u)}</button>`).join('')}</div>
   <div class="ext-layout section">
@@ -412,7 +410,7 @@ function extensao() {
         actions: [{ label: 'Não enviar', value: false, variant: 'btn-secondary' }, { label: 'Enviar mesmo assim', value: true, variant: 'btn-ghost' }],
       });
       if (send) toast({ tone: 'warning', title: 'Dados enviados', text: 'Simulação: nada saiu daqui.' });
-      else toast({ tone: 'success', title: 'Boa decisão', text: 'Seus dados não foram enviados.' });
+      else toast({ tone: 'success', title: 'Envio cancelado', text: 'Seus dados não saíram desta página.' });
     } else toast({ tone: 'success', title: 'Formulário enviado', text: 'Simulação: nada saiu daqui.' });
   };
 }
@@ -422,7 +420,6 @@ const CLIENT = { client_id: 'portal-editais', redirect_uri: '#/portal' };
 const ps = { step: 'start' };
 const rnd = () => [...crypto.getRandomValues(new Uint8Array(32))].map((b) => b.toString(16).padStart(2, '0')).join('');
 const LEVEL = { bronze: 'Bronze', prata: 'Prata', ouro: 'Ouro' };
-const levelBadge = (acr) => badge(`Nível ${LEVEL[acr]}`, acr === 'ouro' ? 'success' : null, acr === 'ouro' ? 'shield' : null);
 const PORTAL_STEP = { start: 0, idp: 0, challenge: 1, desk: 1, fail: 1, done: 2 };
 
 async function doAuthorize() {
@@ -443,27 +440,22 @@ function portal() {
   const at = PORTAL_STEP[ps.step];
   const views = {
     start: () => `
-      <div class="cluster">${badge('Exige nível Ouro', 'info', 'lock')}<span class="muted text-sm">Inscrições até 15/12 (fictício)</span></div>
       <h2>Edital Jovem Inovador 2026</h2>
-      <p>Para se inscrever, entre com sua conta. Este portal pede o nível mais alto de confirmação.</p>
-      <ul class="levels">
-        <li>${badge('Bronze')}<span>E-mail ou telefone</span></li>
-        <li>${badge('Prata')}<span>Documento válido</span></li>
-        <li>${badge('Ouro', 'success', 'shield')}<span>Documento e confirmação do rosto</span></li>
-      </ul>
+      <p class="muted text-sm">Inscrições até 15/12 (data fictícia)</p>
+      <p>Para se inscrever você precisa de conta nível Ouro, que confirma o documento e o rosto. Contas Bronze (só e-mail ou telefone) e Prata (com documento) passam por uma verificação extra.</p>
       <button type="button" class="btn btn-lg btn-block" data-act="login">${icon('idcard')}Entrar com gov.br</button>
       <p class="hint">Na demonstração, o gov.br é simulado.</p>`,
     idp: () => `
-      <div class="cluster">${badge('Provedor de identidade simulado', 'info', 'shield')}</div>
+      <p class="muted text-sm">Login simulado, no lugar do gov.br</p>
       <h2>Quem está entrando?</h2>
       <fieldset class="choices"><legend>Escolha uma pessoa fictícia</legend>
-        ${api.users().map((u, i) => `<label class="choice"><input type="radio" name="sub" value="${u.sub}" ${i === 0 ? 'checked' : ''}><span class="choice-body">${esc(u.name)}</span>${levelBadge(u.acr)}</label>`).join('')}
+        ${api.users().map((u, i) => `<label class="choice"><input type="radio" name="sub" value="${u.sub}" ${i === 0 ? 'checked' : ''}><span class="choice-body">${esc(u.name)}</span><span class="muted text-sm">nível ${LEVEL[u.acr]}</span></label>`).join('')}
       </fieldset>
       <button type="button" class="btn btn-lg btn-block" data-act="authorize">Continuar com passkey ${icon('arrow-right', 'icon-nudge')}</button>`,
     challenge: () => ps.stepUp.current === 'bronze'
       ? `${status({ tone: 'warning', title: 'Falta validar seu documento', body: '<p>O nível Ouro precisa de documento (Prata) e da confirmação do rosto. Envie seu documento primeiro.</p>' })}
          <button type="button" class="btn btn-ghost" data-act="reset">${icon('arrow-left')}Voltar</button>`
-      : `${status({ tone: 'info', title: `Este portal pede nível Ouro. O seu é ${LEVEL[ps.stepUp.current]}.`, body: '<p>Vamos confirmar que é você com uma verificação rápida do rosto. Só pedimos isso quando é preciso.</p>' })}
+      : `${status({ tone: 'info', title: `Este portal pede nível Ouro. O seu é ${LEVEL[ps.stepUp.current]}.`, body: '<p>Para entrar, confirme que é você com uma verificação rápida do rosto. Ela só aparece quando um site pede um nível acima do seu.</p>' })}
          <div class="face">${icon('face')}</div>
          <p class="text-lg"><strong>Etapa ${ps.stage === 'passive' ? 1 : 2} de 2.</strong> ${ps.stage === 'passive' ? 'Olhe para a câmera, sem óculos escuros.' : 'Vire o rosto devagar para a esquerda.'}</p>
          ${ps.msg ? `<p class="muted">${esc(ps.msg)}</p>` : ''}
@@ -472,14 +464,14 @@ function portal() {
          <button type="button" class="btn btn-lg btn-block" data-act="challenge">${icon('face')}${ps.stage === 'passive' ? 'Começar verificação' : 'Fazer a segunda etapa'}</button>`,
     desk: () => `${status({ tone: 'info', title: 'Seu caso foi para a mesa humana', body: `<p>Uma pessoa treinada vai conferir. No nível Ouro, duas pessoas precisam concordar.</p><p class="text-sm">Caso <code>${ps.caseId}</code>. ${esc(ps.msg ?? '')}</p>` })}
          <div class="cluster"><button type="button" class="btn" data-act="status">${icon('refresh')}Ver se já foi aprovado</button><a class="btn btn-ghost" href="#/mesa">Abrir a mesa (demonstração)</a></div>`,
-    done: () => `${status({ tone: 'success', title: `Pronto, ${esc(ps.info.name.split(' ')[0])}! Sua inscrição foi liberada.`, body: `<p>${levelBadge(ps.info.acr)} confirmado por: ${ps.info.amr.join(', ')}.</p>` })}
+    done: () => `${status({ tone: 'success', title: `Pronto, ${esc(ps.info.name.split(' ')[0])}! Sua inscrição foi liberada.`, body: `<p>Nível ${LEVEL[ps.info.acr]}, confirmado por: ${ps.info.amr.join(', ')}.</p>` })}
          <details><summary>Ver dados recebidos pelo portal</summary><pre>${esc(JSON.stringify(ps.info, null, 2))}</pre></details>
          <button type="button" class="btn btn-ghost" data-act="reset">${icon('logout')}Sair</button>`,
     fail: () => `${status({ tone: 'error', title: 'Não foi possível confirmar sua identidade', body: `<p>${esc(ps.msg || 'Tente de novo com boa luz, ou procure um posto de atendimento.')}</p>` })}
          <button type="button" class="btn" data-act="reset">${icon('refresh')}Tentar de novo</button>`,
   };
   view.innerHTML = `
-  ${pageHead('Portal de Editais', 'Site de terceiros de exemplo que usa a identidade do gov.br e pede nível Ouro.', demoBadge('Site fictício'))}
+  ${pageHead('Portal de Editais', 'Site fictício de um parceiro que usa o login do gov.br e exige nível Ouro.')}
   <ol class="steps narrow" aria-label="Etapas">${steps.map((s, i) => `<li class="${i < at ? 'done' : ''}" ${i === at ? 'aria-current="step"' : ''}>${i < at ? '✓ ' : ''}${s}</li>`).join('')}</ol>
   <section class="card stack portal-card ${ps.step === 'idp' ? 'idp' : ''}">${views[ps.step]()}</section>`;
 
@@ -524,7 +516,7 @@ const STATE_VIEW = {
   rejected: ['Rejeitado', 'error', 'x-circle'],
   needs_more_info: ['Pediu mais informações', 'warning', 'alert'],
 };
-const stateBadge = (s) => badge(STATE_VIEW[s][0], STATE_VIEW[s][1], STATE_VIEW[s][2]);
+const stateText = (s) => `<span class="state tone-${STATE_VIEW[s][1]}">${icon(STATE_VIEW[s][2], 'icon-sm')}${STATE_VIEW[s][0]}</span>`;
 const ms = { operator: api.OPERATORS[0].id, selected: null };
 const DOC_SVG = `<svg viewBox="0 0 160 100" aria-hidden="true"><rect class="ev-bg" width="160" height="100"/><rect class="ev-shape" x="12" y="18" width="40" height="52" rx="4"/>
   <rect class="ev-line" x="62" y="20" width="84" height="7" rx="3"/><rect class="ev-line" x="62" y="35" width="70" height="6" rx="3"/><rect class="ev-line" x="62" y="48" width="80" height="6" rx="3"/><rect class="ev-line" x="62" y="61" width="50" height="6" rx="3"/></svg>`;
@@ -543,11 +535,11 @@ function mesa() {
   const detail = !c
     ? `<div class="card">${emptyState({ iconName: 'inbox', title: cases.length ? 'Escolha um caso na fila' : 'Nenhum caso na fila', text: cases.length ? 'Os detalhes aparecem aqui.' : 'Os casos aparecem quando a verificação do rosto fica inconclusiva no Portal.', action: cases.length ? '' : '<a class="btn btn-ghost" href="#/portal">Abrir o Portal</a>' })}</div>`
     : `<section class="card stack" aria-labelledby="case-title">
-      <div class="cluster">${stateBadge(c.state)}${badge(`Nível pedido: ${LEVEL[c.level]}`)}</div>
       <h2 id="case-title" tabindex="-1">${esc(c.name)}</h2>
+      <p class="case-meta">${stateText(c.state)}<span>Pede nível ${LEVEL[c.level]}</span></p>
       <p>Motivo: ${esc(c.reason)}. ${c.level === 'ouro' ? `Aprovações: <strong>${c.approvals.length} de 2</strong>.` : 'Basta uma aprovação.'}</p>
       <div class="evidence"><figure>${DOC_SVG}<figcaption>Documento (fictício)</figcaption></figure><figure>${SELFIE_SVG}<figcaption>Rosto (fictício)</figcaption></figure></div>
-      ${c.log.length ? `<div><h3>Histórico</h3><ul class="log">${c.log.map((l) => `<li>${icon(STATE_VIEW[l.decision][2], 'icon-sm')}<span><strong>${esc(opName(l.operator))}</strong>: ${STATE_VIEW[l.decision][0].toLowerCase()}. “${esc(l.justification)}”</span></li>`).join('')}</ul></div>` : ''}
+      ${c.log.length ? `<div><h3>Histórico</h3><ul class="log">${c.log.map((l) => `<li>${icon(STATE_VIEW[l.decision][2], 'icon-sm')}<span><strong>${esc(opName(l.operator))}</strong>: ${STATE_VIEW[l.decision][0].toLowerCase()}. "${esc(l.justification)}"</span></li>`).join('')}</ul></div>` : ''}
       ${['open', 'in_review'].includes(c.state) ? `<form class="decision" id="decide" novalidate>
         ${field({ id: 'just', label: 'Por que você decidiu assim?', hint: 'Obrigatório. Escreva em uma frase.', control: '<textarea class="textarea" id="just"></textarea>' })}
         <div class="cluster">
@@ -558,14 +550,14 @@ function mesa() {
     </section>`;
 
   view.innerHTML = `
-  ${pageHead('Mesa de validação humana', 'Casos em que a máquina ficou em dúvida. O operador vê só o mínimo necessário.', demoBadge('Dados fictícios'))}
+  ${pageHead('Mesa de validação humana', 'Aqui chegam os casos em que a verificação automática não conseguiu decidir. O operador vê só o necessário para decidir, e todos os dados são fictícios.')}
   <div class="desk">
     <aside class="stack">
-      ${field({ id: 'op', label: 'Você está como', hint: 'Operadores certificados pela trilha “Operador de Mesa”.',
+      ${field({ id: 'op', label: 'Você está como', hint: 'Operadores certificados pela trilha "Operador de Mesa".',
         control: `<div class="select-wrap"><select class="select" id="op">${api.OPERATORS.map((o) => `<option value="${o.id}" ${o.id === ms.operator ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}</select>${icon('chevron', 'icon-sm')}</div>` })}
       <h2 class="section-title">Fila: ${openCount} ${openCount === 1 ? 'caso aberto' : 'casos abertos'}</h2>
       ${cases.length ? `<ul class="case-list">${cases.map((x) => `<li><button type="button" class="case-btn" data-case="${x.id}" ${x.id === ms.selected ? 'aria-current="true"' : ''}>
-        <strong>${esc(x.name)}</strong><span class="case-meta">${stateBadge(x.state)}${badge(LEVEL[x.level])}</span><span class="case-meta muted">${sla(x)}</span></button></li>`).join('')}</ul>`
+        <strong>${esc(x.name)}</strong><span class="case-meta">${stateText(x.state)}<span>${LEVEL[x.level]}</span></span><span class="case-meta muted">${sla(x)}</span></button></li>`).join('')}</ul>`
         : emptyState({ title: 'Fila vazia', text: 'Nenhum caso esperando.' })}
     </aside>
     ${detail}
@@ -596,13 +588,13 @@ function mesa() {
 // ---------- Aprender ----------
 const TRAILS = [
   { id: 'iniciante', name: 'Iniciante', icon: 'shield', goal: 'Reconhecer golpes', qs: [
-    { kind: 'Mensagem', scene: '“Seu CPF será cancelado hoje. Regularize em gov-br-regulariza.com”', q: 'O que você faz?',
+    { kind: 'Mensagem', scene: '"Seu CPF será cancelado hoje. Regularize em gov-br-regulariza.com"', q: 'O que você faz?',
       opts: ['Clico e regularizo logo', 'Ignoro o link e entro no site oficial digitando o endereço', 'Respondo com meu CPF'], a: 1,
       why: 'Pressa e um endereço que imita o governo são sinais de golpe. Digite o endereço oficial você mesmo.', src: 'CERT.br' },
-    { kind: 'Áudio', scene: '“Mãe, troquei de número. Me faz um Pix rapidinho?”', q: 'Qual o primeiro passo?',
+    { kind: 'Áudio', scene: '"Mãe, troquei de número. Me faz um Pix rapidinho?"', q: 'Qual o primeiro passo?',
       opts: ['Fazer o Pix, é meu filho', 'Ligar em vídeo para o número antigo que já estava salvo', 'Pedir uma foto dele'], a: 1,
       why: 'Número novo com pedido de dinheiro é o golpe mais comum. Confirme pelo número que você já tinha.', src: 'CERT.br' },
-    { kind: 'Link', scene: '“Parabéns! Você ganhou R$ 500. Resgate em pix-premiado.net”', q: 'Isso é:',
+    { kind: 'Link', scene: '"Parabéns! Você ganhou R$ 500. Resgate em pix-premiado.net"', q: 'Isso é:',
       opts: ['Um prêmio de verdade', 'Provável golpe'], a: 1,
       why: 'Prêmio que você não pediu, com Pix no endereço, é isca para roubar dados.', src: 'CERT.br' },
   ] },
@@ -613,15 +605,15 @@ const TRAILS = [
     { kind: 'Situação', scene: 'Sua tia já fez um Pix para um golpista há 1 hora.', q: 'O que ela faz agora?',
       opts: ['Espera para ver se devolvem', 'Avisa o banco e pede o MED do Pix o quanto antes', 'Faz outro Pix para testar'], a: 1,
       why: 'O MED (Mecanismo Especial de Devolução) do Pix funciona melhor quanto antes for pedido.', src: 'MED do Pix (Banco Central)' },
-    { kind: 'Mensagem', scene: 'Seu sobrinho de 12 anos recebeu pedido de fotos de um “amigo” de jogo.', q: 'Como ajudar?',
-      opts: ['Mandar ele bloquear e esquecer', 'Conversar com calma, guardar as provas e denunciar', 'Responder ao “amigo”'], a: 1,
+    { kind: 'Mensagem', scene: 'Seu sobrinho de 12 anos recebeu pedido de fotos de um "amigo" de jogo.', q: 'Como ajudar?',
+      opts: ['Mandar ele bloquear e esquecer', 'Conversar com calma, guardar as provas e denunciar', 'Responder ao "amigo"'], a: 1,
       why: 'Acolher a criança, guardar provas e denunciar à SaferNet ou à Polícia Federal protege outras crianças.', src: 'SaferNet e Guardiões da Infância (PF)' },
   ] },
   { id: 'analista', name: 'Analista', icon: 'search', goal: 'Avaliar casos simulados', qs: [
-    { kind: 'Mensagem', scene: '“Oi, vamos almoçar domingo?”', q: 'Qual o nível de alerta?',
+    { kind: 'Mensagem', scene: '"Oi, vamos almoçar domingo?"', q: 'Qual o nível de alerta?',
       opts: ['Alto', 'Médio', 'Baixo, mas sem garantia'], a: 2,
       why: 'Não há tática de manipulação. Mesmo assim, ausência de sinais não é garantia.', src: 'VeriNexus' },
-    { kind: 'Mensagem', scene: '“Me manda o código que chegou no seu celular.”', q: 'Qual tática aparece?',
+    { kind: 'Mensagem', scene: '"Me manda o código que chegou no seu celular."', q: 'Qual tática aparece?',
       opts: ['Pedido de código ou senha', 'Pedido de segredo', 'Nenhuma'], a: 0,
       why: 'Código de confirmação abre sua conta para outra pessoa. Nunca passe códigos.', src: 'CERT.br' },
     { kind: 'Áudio', scene: 'O arquivo do áudio não mostra sinais de edição.', q: 'Isso prova que a voz é do neto?',
@@ -659,7 +651,7 @@ function educacao() {
       action: `<div class="cluster">${next ? `<button type="button" class="btn" data-trail="${next.id}">Próxima trilha: ${next.name} ${icon('arrow-right', 'icon-nudge')}</button>` : ''}<button type="button" class="btn btn-ghost" data-act="back">Ver todas as trilhas</button></div>` })}</section>`;
   } else if (!t) {
     view.innerHTML = `
-    ${pageHead('Aprenda a se proteger', 'Desafios curtos, gratuitos e sem cadastro. Quem conclui as quatro trilhas pode virar operador da mesa.')}
+    ${pageHead('Aprenda a se proteger', 'Desafios curtos, sem cadastro. Quem conclui as quatro trilhas pode trabalhar como operador da mesa.')}
     <section class="card profile">
       ${field({ id: 'nick', label: 'Seu apelido (opcional)', hint: 'Guardamos só o apelido e o progresso, neste aparelho.', control: `<input class="input" id="nick" value="${esc(edu.nick)}" maxlength="30" autocomplete="off" placeholder="como quer ser chamado">` })}
       <div class="stack">
@@ -667,16 +659,14 @@ function educacao() {
         <div class="progress" role="progressbar" aria-label="Progresso até o próximo nível" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${edu.points % 100}"><span style="--p:${(edu.points % 100) / 100}"></span></div>
         <p class="hint">Faltam ${100 - (edu.points % 100)} pontos para o nível ${level + 1}.</p>
       </div>
-      <div class="medals">${edu.medals.length ? edu.medals.map((m) => badge(m, 'success', 'award')).join('') : '<span class="muted text-sm">Conclua uma trilha para ganhar sua primeira medalha.</span>'}</div>
+      <p class="medals">${edu.medals.length ? `${icon('award')}<span>Medalhas: ${edu.medals.map(esc).join(', ')}</span>` : '<span class="muted text-sm">Conclua uma trilha para ganhar sua primeira medalha.</span>'}</p>
     </section>
     <section class="section">
       <h2 class="section-title">Trilhas</h2>
-      <div class="grid-auto">${TRAILS.map((x) => {
+      <div class="grid-auto trails">${TRAILS.map((x) => {
         const n = doneCount(x);
         const complete = n === x.qs.length;
-        return `<section class="card trail ${x === next ? 'is-next' : ''}">
-          <span class="card-icon">${icon(x.icon)}</span>
-          ${x === next ? badge('Sugerida para você', 'success', 'arrow-right') : complete ? badge('Concluída', 'success', 'check') : ''}
+        return `<section class="card trail">
           <h3>${x.name}</h3><p class="muted">${x.goal}</p>
           <div class="progress" aria-hidden="true"><span style="--p:${n / x.qs.length}"></span></div>
           <p class="text-sm">${n} de ${x.qs.length} desafios</p>
@@ -692,11 +682,11 @@ function educacao() {
     <section class="quiz narrow">
       <button type="button" class="btn btn-quiet" data-act="back">${icon('arrow-left')}Voltar às trilhas</button>
       <div class="stack section">
-        <p class="eyebrow">${t.name} · desafio ${es.q + 1} de ${t.qs.length}</p>
+        <p class="muted">${t.name}, desafio ${es.q + 1} de ${t.qs.length}</p>
         <div class="progress" aria-hidden="true"><span style="--p:${es.q / t.qs.length}"></span></div>
       </div>
       <div class="card section">
-        <div class="cluster">${badge(q.kind)}</div>
+        <p class="muted text-sm">${q.kind}</p>
         <p class="scenario">${esc(q.scene)}</p>
         <h2 id="q-title">${esc(q.q)}</h2>
         <div class="choices" role="group" aria-labelledby="q-title">${q.opts.map((o, i) => {
@@ -762,9 +752,8 @@ const KPIS = [
 function painel(loading = false) {
   const m = api.metricsSummary();
   view.innerHTML = `
-  ${pageHead('Painel da SIA', 'Só contagens anônimas. Os números somam o que foi feito nesta sessão.', badge('Dados de demonstração', 'warning', 'info'))}
-  <div class="grid-auto kpis">${KPIS.map(([k, label, ic, help], i) => `<section class="card kpi" style="--i:${i}">
-    <span class="card-icon">${icon(ic)}</span>
+  ${pageHead('Painel da SIA', 'Contagens anônimas geradas para a demonstração, somadas ao que você fez nesta sessão.')}
+  <div class="grid-auto kpis">${KPIS.map(([k, label, , help], i) => `<section class="card kpi" style="--i:${i}">
     ${loading ? skeleton(1) : `<p class="kpi-value">${m[k].toLocaleString('pt-BR')}</p>`}
     <p class="kpi-label">${label}</p><p class="hint">${help}</p></section>`).join('')}</div>
   <div class="cluster section"><button type="button" class="btn btn-ghost" data-act="refresh">${icon('refresh')}Atualizar números</button>

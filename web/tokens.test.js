@@ -25,6 +25,7 @@ export const PAIRS = [
   ['on-error', 'error', 4.5],
   ['success', 'success-bg', 4.5], ['error', 'error-bg', 4.5], ['warning', 'warning-bg', 4.5], ['info', 'info-bg', 4.5],
   ['success', 'surface', 4.5], ['error', 'surface', 4.5], ['warning', 'surface', 4.5], ['info', 'surface', 4.5],
+  ['success', 'primary-subtle', 4.5], ['error', 'primary-subtle', 4.5], ['warning', 'primary-subtle', 4.5], ['muted', 'primary-subtle', 4.5],
   ['text', 'success-bg', 4.5], ['text', 'error-bg', 4.5], ['text', 'warning-bg', 4.5], ['text', 'info-bg', 4.5],
   ['border-strong', 'surface', 3], ['border-strong', 'bg', 3], ['focus', 'bg', 3], ['focus', 'surface', 3],
 ];

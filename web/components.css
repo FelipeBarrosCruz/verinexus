@@ -37,7 +37,6 @@ code { font-size: var(--fs-sm); }
 .text-xs { font-size: var(--fs-xs); }
 .text-lg { font-size: var(--fs-lg); }
 .lead { font-size: var(--fs-lg); color: var(--muted); max-width: var(--measure); }
-.eyebrow { font-size: var(--fs-sm); font-weight: var(--fw-bold); color: var(--secondary); letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: var(--space-2); }
 
 /* ---------- Button ---------- */
 .btn {
@@ -124,7 +123,6 @@ code { font-size: var(--fs-sm); }
 .card-link:active { transform: scale(var(--press-scale)); }
 .card-link .icon-nudge { color: var(--primary); transition: transform var(--dur-fast) var(--ease-spring); }
 .card-link:hover .icon-nudge { transform: translateX(var(--space-1)); }
-.card-icon { display: grid; place-items: center; width: var(--control-h); height: var(--control-h); border-radius: var(--radius-md); background: var(--primary-subtle); color: var(--primary); }
 
 /* ---------- Status (resultado com ícone + título + texto; nunca só cor) ---------- */
 .tone-success { --tone: var(--success); --tone-bg: var(--success-bg); }
@@ -141,9 +139,7 @@ code { font-size: var(--fs-sm); }
 .status-body > :last-child { margin-bottom: 0; }
 .status h4 { margin: var(--space-3) 0 var(--space-1); font-size: var(--fs-sm); font-weight: var(--fw-bold); }
 
-/* ---------- Badge e Chip ---------- */
-.badge { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); font-size: var(--fs-xs); font-weight: var(--fw-bold); line-height: var(--lh-tight); background: var(--tone-bg, var(--surface-2)); color: var(--tone, var(--text)); vertical-align: middle; }
-.badge .icon { width: var(--icon-sm); height: var(--icon-sm); }
+/* ---------- Chip ---------- */
 .chip {
   display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--hit); padding: 0 var(--space-4);
   font: inherit; font-size: var(--fs-sm); color: var(--text); background: var(--surface);
