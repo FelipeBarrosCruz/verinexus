@@ -1,0 +1,195 @@
+/* VeriNexus · Design tokens (direção A · Guardião). Único lugar com valores de cor, tipo, espaço, raio, sombra, camada e movimento.
+   Tamanhos em rem: o botão "Letra maior" muda só o font-size do <html>. */
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url(fonts/atkinson-hyperlegible-next-latin.woff2) format('woff2');
+}
+
+:root {
+  color-scheme: light;
+
+  /* Cor · tema claro */
+  --bg: #F4F7FA;
+  --surface: #FFFFFF;
+  --surface-2: #EBF0F5;
+  --text: #0F1B2A;
+  --muted: #475669;
+  --border: #DCE3EA;
+  --border-strong: #6E7F91;
+  --primary: #0B57A4;
+  --primary-hover: #094A8C;
+  --on-primary: #FFFFFF;
+  --primary-subtle: #E6EFF9;
+  --secondary: #0D7A4E;
+  --secondary-hover: #0A6942;
+  --on-secondary: #FFFFFF;
+  --success: #0D7A4E;
+  --success-bg: #E5F4EC;
+  --error: #B42318;
+  --error-bg: #FDECEA;
+  --warning: #8A5300;
+  --warning-bg: #FFF3D6;
+  --info: #0B57A4;
+  --info-bg: #E6EFF9;
+  --focus: #0B57A4;
+  --overlay: rgb(11 20 32 / 0.55);
+  --shadow-color: 215 40% 12%;
+  --chat-bg: #E7EEF4;
+  --bubble-out: #DDF2E6;
+
+  /* Tipografia */
+  --font-sans: 'Atkinson Hyperlegible Next', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fs-xs: 0.875rem;   /* 14 · só metadados */
+  --fs-sm: 1rem;       /* 16 */
+  --fs-base: 1.125rem; /* 18 · texto padrão */
+  --fs-lg: 1.25rem;    /* 20 */
+  --fs-xl: 1.5rem;     /* 24 */
+  --fs-2xl: 1.875rem;  /* 30 */
+  --fs-3xl: 2.375rem;  /* 38 */
+  --lh-tight: 1.2;
+  --lh-body: 1.5;
+  --fw-regular: 400;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --measure: 62ch;
+
+  /* Espaço (escala 4/8) */
+  --space-1: 0.25rem;  /* 4 */
+  --space-2: 0.5rem;   /* 8 */
+  --space-3: 0.75rem;  /* 12 */
+  --space-4: 1rem;     /* 16 */
+  --space-5: 1.5rem;   /* 24 */
+  --space-6: 2rem;     /* 32 */
+  --space-7: 3rem;     /* 48 */
+  --space-8: 4rem;     /* 64 */
+
+  /* Tamanhos de controle (Fitts: alvo mínimo 44 px) */
+  --hit: 2.75rem;        /* 44 */
+  --control-h: 3rem;     /* 48 */
+  --icon-sm: 1.125rem;
+  --icon-md: 1.5rem;
+  --icon-lg: 3rem;
+  --container: 66rem;
+  --border-w: 1px;
+  --border-w-strong: 2px;
+  --focus-w: 3px;
+
+  /* Raios */
+  --radius-sm: 0.625rem; /* 10 */
+  --radius-btn: 0.75rem; /* 12 */
+  --radius-md: 0.875rem; /* 14 */
+  --radius-lg: 1.25rem;  /* 20 */
+  --radius-pill: 999px;
+
+  /* Sombras (uma fonte de luz, cor neutra, em camadas) */
+  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.08);
+  --shadow-md: 0 1px 2px hsl(var(--shadow-color) / 0.08), 0 4px 12px hsl(var(--shadow-color) / 0.06);
+  --shadow-lg: 0 2px 4px hsl(var(--shadow-color) / 0.08), 0 12px 32px hsl(var(--shadow-color) / 0.16);
+
+  /* Camadas */
+  --z-base: 1;
+  --z-header: 10;
+  --z-nav: 20;
+  --z-toast: 40;
+
+  /* Movimento: 150–300 ms, só transform e opacity */
+  --dur-instant: 100ms;
+  --dur-fast: 160ms;
+  --dur-base: 220ms;
+  --dur-slow: 300ms;
+  --stagger: 40ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --press-scale: 0.97;
+  --lift: -2px;
+  --shake: 10px;
+}
+
+/* Tema escuro: sistema, a menos que a pessoa escolha "claro" */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0B1420;
+    --surface: #132030;
+    --surface-2: #1A2A3D;
+    --text: #E8EEF5;
+    --muted: #A6B4C3;
+    --border: #24364A;
+    --border-strong: #7186A0;
+    --primary: #72B4F5;
+    --primary-hover: #95C7F8;
+    --on-primary: #04121F;
+    --primary-subtle: #0F2740;
+    --secondary: #52D19C;
+    --secondary-hover: #77DDB2;
+    --on-secondary: #03170E;
+    --success: #52D19C;
+    --success-bg: #0F2E22;
+    --error: #FF8E84;
+    --error-bg: #3A1613;
+    --warning: #F5C451;
+    --warning-bg: #33270A;
+    --info: #72B4F5;
+    --info-bg: #0F2740;
+    --focus: #72B4F5;
+    --overlay: rgb(0 0 0 / 0.65);
+    --shadow-color: 215 60% 2%;
+    --chat-bg: #0E1926;
+    --bubble-out: #14402E;
+  }
+}
+
+/* Tema escuro escolhido pela pessoa (mesmos valores do bloco acima) */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0B1420;
+  --surface: #132030;
+  --surface-2: #1A2A3D;
+  --text: #E8EEF5;
+  --muted: #A6B4C3;
+  --border: #24364A;
+  --border-strong: #7186A0;
+  --primary: #72B4F5;
+  --primary-hover: #95C7F8;
+  --on-primary: #04121F;
+  --primary-subtle: #0F2740;
+  --secondary: #52D19C;
+  --secondary-hover: #77DDB2;
+  --on-secondary: #03170E;
+  --success: #52D19C;
+  --success-bg: #0F2E22;
+  --error: #FF8E84;
+  --error-bg: #3A1613;
+  --warning: #F5C451;
+  --warning-bg: #33270A;
+  --info: #72B4F5;
+  --info-bg: #0F2740;
+  --focus: #72B4F5;
+  --overlay: rgb(0 0 0 / 0.65);
+  --shadow-color: 215 60% 2%;
+  --chat-bg: #0E1926;
+  --bubble-out: #14402E;
+}
+
+/* Letra maior (preferência da pessoa) */
+:root[data-text="lg"] { font-size: 118.75%; }
+
+/* Movimento reduzido: tudo instantâneo */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 0.01ms;
+    --dur-fast: 0.01ms;
+    --dur-base: 0.01ms;
+    --dur-slow: 0.01ms;
+    --stagger: 0ms;
+    --press-scale: 1;
+    --lift: 0;
+    --shake: 0;
+  }
+}
