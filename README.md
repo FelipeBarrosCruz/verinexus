@@ -24,31 +24,40 @@ Abrir o `index.html` com dois cliques não funciona, porque o navegador bloqueia
 
 Se preferir Node.js no lugar do Python, rode `npx http-server web -p 8000` na pasta do projeto.
 
-## Como publicar na Netlify
+## Como publicar na Railway
 
-O `netlify.toml` na raiz já diz à Netlify para publicar a pasta `web/` sem build. Antes de começar, confira se esse arquivo está na branch `main` do GitHub.
+O `Dockerfile` na raiz monta um container com o servidor Caddy servindo a pasta `web/` na porta que a Railway define. Antes de começar, confira se o `Dockerfile` e o `.dockerignore` estão na branch `main` do GitHub.
 
-1. Entre em https://app.netlify.com e crie a conta com o botão do GitHub.
-2. No painel, clique em "Add new project" (em algumas versões aparece como "Add new site") e depois em "Import an existing project".
-3. Escolha GitHub e autorize a Netlify a ler seus repositórios.
-4. Selecione o repositório `verinexus`. Se ele não aparecer, clique em "Configure the Netlify app on GitHub" e libere o acesso a esse repositório. Como o repositório é da conta `FelipeBarrosCruz`, talvez o dono precise aprovar esse acesso.
-5. Na tela de configuração, deixe a branch `main`. Os campos de build já vêm do `netlify.toml`: comando de build vazio e pasta de publicação `web`. Não precisa mudar nada.
-6. Clique em "Deploy". Em menos de um minuto o site fica no ar num endereço como `nome-aleatorio.netlify.app`.
-7. Para trocar o nome, vá em "Project configuration" (ou "Site configuration"), depois "Change project name", e escolha algo como `verinexus`. O endereço passa a ser `verinexus.netlify.app`, se o nome estiver livre.
+A Railway não tem plano gratuito permanente: a conta nova ganha um crédito de teste e depois passa para um plano pago. Confira os valores em https://railway.com/pricing antes de publicar.
 
-Depois disso, cada push na `main` publica o site de novo sozinho, e cada pull request ganha um endereço de prévia.
+1. Entre em https://railway.com e faça login com o GitHub.
+2. Clique em "New Project" e escolha "Deploy from GitHub repo".
+3. Selecione o repositório `verinexus`. Se ele não aparecer, clique em "Configure GitHub App" e libere o acesso. Como o repositório é da conta `FelipeBarrosCruz`, talvez o dono precise aprovar.
+4. A Railway encontra o `Dockerfile` e começa o build sozinha. Espere o deploy aparecer como concluído.
+5. Abra o serviço, vá em "Settings", depois em "Networking", e clique em "Generate Domain". Se pedir uma porta, use `8080`.
+6. Abra o endereço gerado, que termina em `.up.railway.app`.
 
-Para publicar sem conectar o GitHub, há dois caminhos:
+Depois disso, cada push na `main` gera um deploy novo.
 
-- Arraste a pasta `web/` para https://app.netlify.com/drop. Cada atualização exige arrastar de novo.
-- Use a linha de comando, na raiz do projeto:
+Se o endereço não responder, vá em "Variables" no serviço, crie a variável `PORT` com o valor `8080` e confira se o domínio aponta para a mesma porta.
 
-  ```sh
-  npx netlify-cli login
-  npx netlify-cli deploy --prod
-  ```
+Para publicar pela linha de comando, na raiz do projeto:
 
-  O comando lê o `netlify.toml`, então publica a pasta `web/` sem precisar de mais opções. Na primeira vez ele pergunta se deve criar um projeto novo.
+```sh
+npx @railway/cli login
+npx @railway/cli init
+npx @railway/cli up
+npx @railway/cli domain
+```
+
+Para testar o container no seu computador antes de publicar:
+
+```sh
+docker build -t verinexus-web .
+docker run --rm -p 8080:8080 verinexus-web
+```
+
+Depois abra http://localhost:8080.
 
 ## Como rodar os testes
 
