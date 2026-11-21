@@ -2,29 +2,54 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
   <title>VeriNexus</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/atkinson-hyperlegible-next-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
   <link rel="stylesheet" href="style.css">
+  <script>
+    // Aplica tema e tamanho da letra antes de pintar, para não piscar.
+    try {
+      const p = JSON.parse(localStorage.getItem('verinexus-prefs')) || {};
+      if (p.theme) document.documentElement.dataset.theme = p.theme;
+      if (p.text === 'lg') document.documentElement.dataset.text = 'lg';
+    } catch {}
+  </script>
 </head>
 <body>
-  <a class="skip" href="#view">Pular para o conteúdo</a>
-  <header class="top">
-    <a class="brand" href="#/">
-      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="var(--brand)"/><circle cx="12" cy="11" r="2.4" fill="var(--on-brand)"/><path d="M12 11 8 8m4 3 4-3m-4 3v5" stroke="var(--on-brand)" stroke-width="1.6"/></svg>
-      VeriNexus
-    </a>
-    <nav aria-label="Principal">
-      <a href="#/">Verificar</a>
-      <a href="#/whatsapp">WhatsApp</a>
-      <a href="#/extensao">Extensão</a>
-      <a href="#/portal">Portal</a>
-      <a href="#/mesa">Mesa</a>
-      <a href="#/educacao">Aprender</a>
-      <a href="#/painel">Painel</a>
-    </nav>
+  <a class="btn skip-link" href="#view">Pular para o conteúdo</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#/" aria-label="VeriNexus, página inicial">
+        <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path class="logo-shield" d="M16 2.5 5 6.6v8.2c0 6.9 4.6 12 11 14.2 6.4-2.2 11-7.3 11-14.2V6.6L16 2.5Z"/>
+          <path class="logo-line" d="M16 15 10.5 11M16 15l5.5-4M16 15v7" fill="none" stroke-width="2" stroke-linecap="round"/>
+          <circle class="logo-node" cx="16" cy="15" r="3"/>
+        </svg>
+        <span>VeriNexus</span>
+      </a>
+      <nav class="nav-top" aria-label="Principal" data-nav></nav>
+      <div class="prefs">
+        <button type="button" class="btn btn-quiet" data-pref="text"></button>
+        <button type="button" class="btn btn-quiet" data-pref="theme"></button>
+      </div>
+    </div>
   </header>
-  <main id="view" tabindex="-1"></main>
-  <footer class="foot">POC do Ideathon Piauí 2026. Tudo é simulado e todos os dados são fictícios. Pare. Confirme. Só depois aja.</footer>
+
+  <main id="view" class="page" tabindex="-1"></main>
+
+  <footer class="footer">
+    <p><strong>Pare. Confirme. Só depois aja.</strong></p>
+    <p>Protótipo do Ideathon Piauí 2026. Tudo aqui é simulado e todos os dados são fictícios.</p>
+  </footer>
+
+  <nav class="tabbar" aria-label="Atalhos" data-nav></nav>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
   <script type="module" src="app.js"></script>
 </body>
 </html>
