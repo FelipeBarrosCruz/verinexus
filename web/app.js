@@ -75,7 +75,6 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderPref
 addEventListener('hashchange', () => { render(); scrollTo(0, 0); view.focus({ preventScroll: true }); });
 applyPrefs();
 renderPrefs();
-render();
 
 const pageHead = (title, lead) =>
   `<header class="page-head"><h1>${title}</h1>${lead ? `<p class="lead">${lead}</p>` : ''}</header>`;
@@ -766,3 +765,7 @@ function painel(loading = false) {
     toast({ tone: 'success', title: 'Números atualizados' });
   };
 }
+
+// Primeira renderização no fim do módulo: as telas usam estado (chat, ext, ps, ms, es, edu, KPIS, TRAILS)
+// declarado com const mais abaixo; renderizar antes disso dava ReferenceError ao recarregar em #/whatsapp etc.
+render();

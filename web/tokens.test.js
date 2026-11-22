@@ -23,6 +23,7 @@ export const PAIRS = [
   ['on-primary', 'primary', 4.5], ['on-primary', 'primary-hover', 4.5],
   ['on-secondary', 'secondary', 4.5], ['on-secondary', 'secondary-hover', 4.5],
   ['on-error', 'error', 4.5],
+  ['on-cta', 'cta', 4.5], ['on-cta', 'cta-hover', 4.5],
   ['success', 'success-bg', 4.5], ['error', 'error-bg', 4.5], ['warning', 'warning-bg', 4.5], ['info', 'info-bg', 4.5],
   ['success', 'surface', 4.5], ['error', 'surface', 4.5], ['warning', 'surface', 4.5], ['info', 'surface', 4.5],
   ['success', 'primary-subtle', 4.5], ['error', 'primary-subtle', 4.5], ['warning', 'primary-subtle', 4.5], ['muted', 'primary-subtle', 4.5],

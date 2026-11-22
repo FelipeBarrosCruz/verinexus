@@ -1,4 +1,4 @@
-/* VeriNexus · Design tokens (direção A · Guardião). Único lugar com valores de cor, tipo, espaço, raio, sombra, camada e movimento.
+/* VeriNexus · Design tokens (direção A · Guardião, cores alinhadas ao deck do pitch). Único lugar com valores de cor, tipo, espaço, raio, sombra, camada e movimento.
    Tamanhos em rem: o botão "Letra maior" muda só o font-size do <html>. */
 
 @font-face {
@@ -13,34 +13,38 @@
   color-scheme: light;
 
   /* Cor · tema claro */
-  --bg: #F4F7FA;
+  --bg: #F4F7F6;
   --surface: #FFFFFF;
-  --surface-2: #EBF0F5;
-  --text: #0F1B2A;
-  --muted: #475669;
-  --border: #DCE3EA;
-  --border-strong: #6E7F91;
-  --primary: #0B57A4;
-  --primary-hover: #094A8C;
+  --surface-2: #E9EFF1;
+  --text: #0E2238;
+  --muted: #3F4F63;
+  --border: #D3DDE4;
+  --border-strong: #5B6B7D;
+  --primary: #1F5FD6;
+  --primary-hover: #1850B8;
   --on-primary: #FFFFFF;
-  --primary-subtle: #E6EFF9;
-  --secondary: #0D7A4E;
-  --secondary-hover: #0A6942;
+  --primary-subtle: #E3ECFB;
+  --secondary: #0B7A52;
+  --secondary-hover: #096844;
   --on-secondary: #FFFFFF;
-  --success: #0D7A4E;
-  --success-bg: #E5F4EC;
+  --success: #096844;
+  --success-bg: #D8F3E8;
   --error: #B42318;
   --error-bg: #FDECEA;
   --on-error: #FFFFFF;
   --warning: #8A5300;
   --warning-bg: #FFF3D6;
-  --info: #0B57A4;
-  --info-bg: #E6EFF9;
-  --focus: #0B57A4;
-  --overlay: rgb(11 20 32 / 0.55);
-  --shadow-color: 215 40% 12%;
-  --chat-bg: #E7EEF4;
-  --bubble-out: #DDF2E6;
+  --info: #1F5FD6;
+  --info-bg: #E3ECFB;
+  --focus: #1F5FD6;
+  --overlay: rgb(14 34 56 / 0.6);
+  --shadow-color: 210 60% 14%;
+  --chat-bg: #E2EAEE;
+  --bubble-out: #DCF8C6;
+  --cta: #34D399;
+  --cta-hover: #5FE0B3;
+  --on-cta: #0E2238;
+  --brand-navy: #0E2238;
 
   /* Tipografia */
   --font-sans: 'Atkinson Hyperlegible Next', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -138,68 +142,89 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #0B1420;
-    --surface: #132030;
-    --surface-2: #1A2A3D;
-    --text: #E8EEF5;
-    --muted: #A6B4C3;
-    --border: #24364A;
-    --border-strong: #7186A0;
-    --primary: #72B4F5;
-    --primary-hover: #95C7F8;
+    --bg: #0E2238;
+    --surface: #16314F;
+    --surface-2: #1D3D60;
+    --text: #F4F7F6;
+    --muted: #C9D6E3;
+    --border: #2B4A6C;
+    --border-strong: #7390AD;
+    --primary: #5B9BFF;
+    --primary-hover: #8DB9FF;
     --on-primary: #04121F;
-    --primary-subtle: #0F2740;
-    --secondary: #52D19C;
-    --secondary-hover: #77DDB2;
+    --primary-subtle: #12304F;
+    --secondary: #34D399;
+    --secondary-hover: #5FE0B3;
     --on-secondary: #03170E;
-    --success: #52D19C;
-    --success-bg: #0F2E22;
+    --success: #34D399;
+    --success-bg: #0F3A2D;
     --error: #FF8E84;
     --error-bg: #3A1613;
     --on-error: #2A0806;
     --warning: #F5C451;
     --warning-bg: #33270A;
-    --info: #72B4F5;
-    --info-bg: #0F2740;
-    --focus: #72B4F5;
-    --overlay: rgb(0 0 0 / 0.65);
-    --shadow-color: 215 60% 2%;
-    --chat-bg: #0E1926;
-    --bubble-out: #14402E;
+    --info: #5B9BFF;
+    --info-bg: #12304F;
+    --focus: #5B9BFF;
+    --overlay: rgb(5 14 26 / 0.7);
+    --shadow-color: 210 70% 4%;
+    --chat-bg: #0B1B2E;
+    --bubble-out: #13412F;
+  --cta: #34D399;
+  --cta-hover: #5FE0B3;
+  --on-cta: #0E2238;
+  --brand-navy: #0E2238;
   }
 }
 
 /* Tema escuro escolhido pela pessoa (mesmos valores do bloco acima) */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0B1420;
-  --surface: #132030;
-  --surface-2: #1A2A3D;
-  --text: #E8EEF5;
-  --muted: #A6B4C3;
-  --border: #24364A;
-  --border-strong: #7186A0;
-  --primary: #72B4F5;
-  --primary-hover: #95C7F8;
+  --bg: #0E2238;
+  --surface: #16314F;
+  --surface-2: #1D3D60;
+  --text: #F4F7F6;
+  --muted: #C9D6E3;
+  --border: #2B4A6C;
+  --border-strong: #7390AD;
+  --primary: #5B9BFF;
+  --primary-hover: #8DB9FF;
   --on-primary: #04121F;
-  --primary-subtle: #0F2740;
-  --secondary: #52D19C;
-  --secondary-hover: #77DDB2;
+  --primary-subtle: #12304F;
+  --secondary: #34D399;
+  --secondary-hover: #5FE0B3;
   --on-secondary: #03170E;
-  --success: #52D19C;
-  --success-bg: #0F2E22;
+  --success: #34D399;
+  --success-bg: #0F3A2D;
   --error: #FF8E84;
   --error-bg: #3A1613;
   --on-error: #2A0806;
   --warning: #F5C451;
   --warning-bg: #33270A;
-  --info: #72B4F5;
-  --info-bg: #0F2740;
-  --focus: #72B4F5;
-  --overlay: rgb(0 0 0 / 0.65);
-  --shadow-color: 215 60% 2%;
-  --chat-bg: #0E1926;
-  --bubble-out: #14402E;
+  --info: #5B9BFF;
+  --info-bg: #12304F;
+  --focus: #5B9BFF;
+  --overlay: rgb(5 14 26 / 0.7);
+  --shadow-color: 210 70% 4%;
+  --chat-bg: #0B1B2E;
+  --bubble-out: #13412F;
+  --cta: #34D399;
+  --cta-hover: #5FE0B3;
+  --on-cta: #0E2238;
+  --brand-navy: #0E2238;
+}
+
+/* Cabeçalho: sempre azul-marinho, como a capa do deck, nos dois temas (usa os valores do tema escuro) */
+.topbar {
+  --surface: var(--brand-navy);
+  --surface-2: #1D3D60;
+  --text: #F4F7F6;
+  --muted: #C9D6E3;
+  --border: #2B4A6C;
+  --border-strong: #7390AD;
+  --primary: #5B9BFF;
+  --primary-subtle: #12304F;
+  --focus: #5B9BFF;
 }
 
 /* Letra maior (preferência da pessoa) */
