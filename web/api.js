@@ -146,7 +146,8 @@ export const OIDC_DISCOVERY = {
 };
 const CLIENTS = { 'portal-editais': { redirect_uri: '#/portal' } };
 
-export const users = () => Object.values(USERS);
+// Pessoas só da fila da mesa (queue_only) não aparecem na escolha de login do portal.
+export const users = () => Object.values(USERS).filter((u) => !u.queue_only);
 
 export function authorize({ client_id, redirect_uri, response_type, state, code_challenge, code_challenge_method, acr_values = 'bronze' } = {}, sub) {
   const client = CLIENTS[client_id];
@@ -213,11 +214,11 @@ export const OPERATORS = [
   { id: 'op-iara', name: 'Iara (Oeiras)' },
 ];
 
-export function deskCase({ sub, level, reason } = {}) {
+export function deskCase({ sub, level, reason, assigned = OPERATORS[0].id } = {}) {
   const user = USERS[sub];
   if (!user) bad('sub inválido');
   if (!['prata', 'ouro'].includes(level)) bad('level inválido');
-  const c = { id: rid('case').slice(0, 13), sub, name: user.name, level, reason, state: 'open', created: Date.now(), sla_minutes: 30, approvals: [], log: [] };
+  const c = { id: rid('case').slice(0, 13), sub, name: user.name, level, reason, assigned, state: 'open', created: Date.now(), sla_minutes: 30, approvals: [], log: [] };
   cases.push(c);
   return c;
 }
@@ -238,7 +239,11 @@ export function deskDecide({ case_id, operator, decision, justification } = {}) 
   if (c.approvals.length >= needed) {
     c.state = 'approved';
     upgrade(USERS[c.sub], c.level);
-  } else c.state = 'in_review';
+  } else {
+    // Falta outro operador: o caso vai para a fila do próximo que ainda não aprovou.
+    c.state = 'in_review';
+    c.assigned = OPERATORS.find((o) => !c.approvals.includes(o.id) && o.id !== c.assigned)?.id ?? c.assigned;
+  }
   return c;
 }
 
@@ -254,10 +259,30 @@ export function resetState() {
     'u-maria': { sub: 'u-maria', name: 'Maria das Dores (fictícia)', acr: 'prata', amr: ['pwd', 'passkey'] },
     'u-joao': { sub: 'u-joao', name: 'João Batista (fictício)', acr: 'ouro', amr: ['passkey', 'face'] },
     'u-ana': { sub: 'u-ana', name: 'Ana Clara (fictícia)', acr: 'bronze', amr: ['pwd'] },
+    'u-pedro': { sub: 'u-pedro', name: 'Pedro Henrique (fictício)', acr: 'bronze', amr: ['pwd'], queue_only: true },
+    'u-luzia': { sub: 'u-luzia', name: 'Luzia Ferreira (fictícia)', acr: 'prata', amr: ['pwd'], queue_only: true },
+    'u-raimundo': { sub: 'u-raimundo', name: 'Raimundo Nonato (fictício)', acr: 'prata', amr: ['pwd'], queue_only: true },
+    'u-tereza': { sub: 'u-tereza', name: 'Tereza Cristina (fictícia)', acr: 'bronze', amr: ['pwd'], queue_only: true },
+    'u-francisco': { sub: 'u-francisco', name: 'Francisco Lima (fictício)', acr: 'prata', amr: ['pwd'], queue_only: true },
+    'u-marcos': { sub: 'u-marcos', name: 'Marcos Vinícius (fictício)', acr: 'bronze', amr: ['pwd'], queue_only: true },
+    'u-joana': { sub: 'u-joana', name: 'Joana Sousa (fictícia)', acr: 'bronze', amr: ['pwd'], queue_only: true },
+    'u-antonio': { sub: 'u-antonio', name: 'Antônio Carlos (fictício)', acr: 'prata', amr: ['pwd'], queue_only: true },
   };
   codes = new Map();
   tokens = new Map();
   cases = [];
-  deskCase({ sub: 'u-ana', level: 'prata', reason: 'Foto do documento com reflexo' });
+  // Fila de demonstração: cada operador tem a sua, com pessoas diferentes (fictícias). Casos Ouro precisam de dois operadores:
+  // depois da primeira aprovação o caso passa para a fila de outro.
+  const seed = (assigned, sub, level, reason, minutesAgo) => { const c = deskCase({ sub, level, reason, assigned }); c.created = Date.now() - minutesAgo * 60000; return c; };
+  seed('op-carla', 'u-ana', 'prata', 'Foto do documento com reflexo', 4);
+  seed('op-carla', 'u-pedro', 'prata', 'Nome no documento diferente do cadastro (sobrenome abreviado)', 12);
+  seed('op-carla', 'u-tereza', 'prata', 'Documento com validade vencida', 41);
+  seed('op-davi', 'u-raimundo', 'ouro', 'Rosto parcialmente coberto por boné', 26);
+  seed('op-davi', 'u-marcos', 'prata', 'Documento borrado, número ilegível', 9);
+  seed('op-iara', 'u-francisco', 'ouro', 'Rosto não parece bater com a foto do documento', 7);
+  seed('op-iara', 'u-joana', 'prata', 'CPF do documento diverge do cadastro', 15);
+  seed('op-iara', 'u-antonio', 'ouro', 'Selfie parece foto de uma tela', 22);
+  const luzia = seed('op-carla', 'u-luzia', 'ouro', 'Verificação do rosto inconclusiva: pouca luz', 18);
+  deskDecide({ case_id: luzia.id, operator: 'op-carla', decision: 'approved', justification: 'Rosto confere com o documento apesar da pouca luz.' });
 }
 resetState();

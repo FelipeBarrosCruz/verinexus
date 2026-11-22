@@ -92,3 +92,25 @@ test('caso ambíguo ouro precisa de dois operadores diferentes', async () => {
   assert.equal(c.state, 'approved');
   assert.ok((await login('u-maria', 'ouro')).res.code);
 });
+
+test('fila de demonstração: cada operador tem pessoas diferentes e não polui o login', () => {
+  api.resetState();
+  const cs = api.deskCases();
+  assert.equal(cs.length, 9);
+  const names = (op) => cs.filter((c) => c.assigned === op).map((c) => c.name);
+  const [carla, davi, iara] = ['op-carla', 'op-davi', 'op-iara'].map(names);
+  assert.ok(carla.length >= 3 && davi.length >= 2 && iara.length >= 3);
+  assert.equal(new Set([...carla, ...davi, ...iara]).size, cs.length, 'nenhum nome repetido entre filas');
+  assert.ok(cs.some((c) => c.level === 'prata') && cs.some((c) => c.level === 'ouro'));
+  assert.ok(cs.some((c) => Date.now() - c.created > 30 * 60000), 'um caso com prazo vencido');
+  assert.deepEqual(api.users().map((u) => u.sub), ['u-maria', 'u-joao', 'u-ana']);
+});
+
+test('primeira aprovação de caso Ouro leva o caso para a fila de outro operador', () => {
+  api.resetState();
+  const luzia = api.deskCases().find((c) => c.sub === 'u-luzia');
+  assert.equal(luzia.state, 'in_review');
+  assert.equal(luzia.assigned, 'op-davi');
+  api.deskDecide({ case_id: luzia.id, operator: 'op-davi', decision: 'approved', justification: 'confere' });
+  assert.equal(luzia.state, 'approved');
+});

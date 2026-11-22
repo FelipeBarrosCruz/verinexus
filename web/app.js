@@ -523,23 +523,31 @@ const SELFIE_SVG = `<svg viewBox="0 0 160 100" aria-hidden="true"><rect class="e
 
 function mesa() {
   const cases = api.deskCases();
-  const c = cases.find((x) => x.id === ms.selected);
-  const openCount = cases.filter((x) => ['open', 'in_review'].includes(x.state)).length;
+  // Cada operador vê só a própria fila (pessoas diferentes) e o que ele já tratou.
+  const visible = (x) => x.assigned === ms.operator || x.log.some((l) => l.operator === ms.operator);
+  const c = cases.find((x) => x.id === ms.selected && visible(x));
+  // A fila muda com o operador: "para você" são os casos abertos em que este operador ainda pode decidir.
+  const actionable = (x) => x.assigned === ms.operator && ['open', 'in_review'].includes(x.state) && !x.approvals.includes(ms.operator);
+  const mine = cases.filter(actionable);
+  const others = cases.filter((x) => visible(x) && !actionable(x));
   const opName = (id) => api.OPERATORS.find((o) => o.id === id).name;
   const sla = (x) => {
     if (['approved', 'rejected'].includes(x.state)) return '';
     const left = x.sla_minutes - Math.floor((Date.now() - x.created) / 60000);
     return `<span class="cluster">${icon('clock', 'icon-sm')}${left > 0 ? `faltam ${left} min` : 'prazo vencido'}</span>`;
   };
+  const caseList = (xs) => `<ul class="case-list">${xs.map((x) => `<li><button type="button" class="case-btn" data-case="${x.id}" ${x.id === ms.selected ? 'aria-current="true"' : ''}>
+    <strong>${esc(x.name)}</strong><span class="case-meta">${stateText(x.state)}<span>${LEVEL[x.level]}</span></span><span class="case-meta muted">${sla(x)}</span></button></li>`).join('')}</ul>`;
   const detail = !c
-    ? `<div class="card">${emptyState({ iconName: 'inbox', title: cases.length ? 'Escolha um caso na fila' : 'Nenhum caso na fila', text: cases.length ? 'Os detalhes aparecem aqui.' : 'Os casos aparecem quando a verificação do rosto fica inconclusiva no Portal.', action: cases.length ? '' : '<a class="btn btn-ghost" href="#/portal">Abrir o Portal</a>' })}</div>`
+    ? `<div class="card">${emptyState({ iconName: 'inbox', title: mine.length + others.length ? 'Escolha um caso na fila' : 'Nenhum caso na fila', text: mine.length + others.length ? 'Os detalhes aparecem aqui.' : 'Os casos aparecem quando a verificação do rosto fica inconclusiva no Portal.', action: mine.length + others.length ? '' : '<a class="btn btn-ghost" href="#/portal">Abrir o Portal</a>' })}</div>`
     : `<section class="card stack" aria-labelledby="case-title">
       <h2 id="case-title" tabindex="-1">${esc(c.name)}</h2>
       <p class="case-meta">${stateText(c.state)}<span>Pede nível ${LEVEL[c.level]}</span></p>
       <p>Motivo: ${esc(c.reason)}. ${c.level === 'ouro' ? `Aprovações: <strong>${c.approvals.length} de 2</strong>.` : 'Basta uma aprovação.'}</p>
       <div class="evidence"><figure>${DOC_SVG}<figcaption>Documento (fictício)</figcaption></figure><figure>${SELFIE_SVG}<figcaption>Rosto (fictício)</figcaption></figure></div>
       ${c.log.length ? `<div><h3>Histórico</h3><ul class="log">${c.log.map((l) => `<li>${icon(STATE_VIEW[l.decision][2], 'icon-sm')}<span><strong>${esc(opName(l.operator))}</strong>: ${STATE_VIEW[l.decision][0].toLowerCase()}. "${esc(l.justification)}"</span></li>`).join('')}</ul></div>` : ''}
-      ${['open', 'in_review'].includes(c.state) ? `<form class="decision" id="decide" novalidate>
+      ${['open', 'in_review'].includes(c.state) && c.approvals.includes(ms.operator) ? `<p class="hint">Você já aprovou este caso. Ele foi para a fila de ${esc(opName(c.assigned))}: troque o operador acima para dar a segunda aprovação.</p>` : ''}
+      ${actionable(c) ? `<form class="decision" id="decide" novalidate>
         ${field({ id: 'just', label: 'Por que você decidiu assim?', hint: 'Obrigatório. Escreva em uma frase.', control: '<textarea class="textarea" id="just"></textarea>' })}
         <div class="cluster">
           <button class="btn btn-secondary" data-dec="approved">${icon('check')}Aprovar</button>
@@ -554,15 +562,14 @@ function mesa() {
     <aside class="stack">
       ${field({ id: 'op', label: 'Você está como', hint: 'Operadores certificados pela trilha "Operador de Mesa".',
         control: `<div class="select-wrap"><select class="select" id="op">${api.OPERATORS.map((o) => `<option value="${o.id}" ${o.id === ms.operator ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}</select>${icon('chevron', 'icon-sm')}</div>` })}
-      <h2 class="section-title">Fila: ${openCount} ${openCount === 1 ? 'caso aberto' : 'casos abertos'}</h2>
-      ${cases.length ? `<ul class="case-list">${cases.map((x) => `<li><button type="button" class="case-btn" data-case="${x.id}" ${x.id === ms.selected ? 'aria-current="true"' : ''}>
-        <strong>${esc(x.name)}</strong><span class="case-meta">${stateText(x.state)}<span>${LEVEL[x.level]}</span></span><span class="case-meta muted">${sla(x)}</span></button></li>`).join('')}</ul>`
-        : emptyState({ title: 'Fila vazia', text: 'Nenhum caso esperando.' })}
+      <h2 class="section-title">Para você: ${mine.length} ${mine.length === 1 ? 'caso' : 'casos'}</h2>
+      ${mine.length ? caseList(mine) : emptyState({ title: 'Sua fila está vazia', text: 'Troque de operador para ver a fila de outra pessoa.' })}
+      ${others.length ? `<h2 class="section-title">Já tratados por você</h2><p class="hint">Encerrados ou esperando outro operador.</p>${caseList(others)}` : ''}
     </aside>
     ${detail}
   </div>`;
 
-  view.onchange = (e) => { if (e.target.id === 'op') ms.operator = e.target.value; };
+  view.onchange = (e) => { if (e.target.id === 'op') { ms.operator = e.target.value; mesa(); view.querySelector('#op')?.focus(); } };
   view.oninput = (e) => { if (e.target.id === 'just') setFieldError(e.target, null); };
   view.onsubmit = (e) => e.preventDefault();
   view.onclick = (e) => {
