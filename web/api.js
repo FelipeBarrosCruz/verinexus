@@ -15,7 +15,7 @@ const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 const rid = (p) => `${p}_${crypto.getRandomValues(new Uint32Array(2)).join('')}`;
 
 // ---------- Métricas (gerador sintético + contagens da sessão) ----------
-const BASE = { scams_prevented: 12840, sites_flagged: 3127, people_trained: 8410, desk_operators: 146 };
+const BASE = { scams_prevented: 48000, sites_flagged: 6000, people_trained: 2000, desk_operators: 120 }; // mesmos valores ilustrativos do slide do pitch
 let stats;
 
 // ---------- Reputação de sites (listas fictícias, specs/06) ----------
